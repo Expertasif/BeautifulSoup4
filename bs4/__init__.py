@@ -178,15 +178,21 @@ class BeautifulSoup(Tag):
                 # system. Just let it go.
                 pass
             if is_file:
-                warnings.warn(
-                    '"%s" looks like a filename, not markup. You should probably open this file and pass the filehandle into Beautiful Soup.' % markup)
+                try:
+                    warnings.warn(
+                        '"%s" looks like a filename, not markup. You should probably open this file and pass the filehandle into Beautiful Soup.' % markup)
+                except UnicodeEncodeError:
+                    pass
             if markup[:5] == "http:" or markup[:6] == "https:":
                 # TODO: This is ugly but I couldn't get it to work in
                 # Python 3 otherwise.
                 if ((isinstance(markup, bytes) and not b' ' in markup)
                     or (isinstance(markup, unicode) and not u' ' in markup)):
-                    warnings.warn(
-                        '"%s" looks like a URL. Beautiful Soup is not an HTTP client. You should probably use an HTTP client to get the document behind the URL, and feed that document to Beautiful Soup.' % markup)
+                    try:
+                        warnings.warn(
+                            '"%s" looks like a URL. Beautiful Soup is not an HTTP client. You should probably use an HTTP client to get the document behind the URL, and feed that document to Beautiful Soup.' % markup)
+                    except UnicodeEncodeError:
+                        pass
 
         for (self.markup, self.original_encoding, self.declared_html_encoding,
          self.contains_replacement_characters) in (
